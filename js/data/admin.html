@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>管理员面板</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-card {
+            background: white;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .admin-card h3 { color: #dc3545; margin-top: 0; }
+        .stat { font-size: 24px; font-weight: bold; color: #007bff; }
+    </style>
+</head>
+<body>
+    <h1>👑 管理员面板</h1>
+    <nav>
+        <a href="dashboard.html">用户面板</a>
+        <a href="#" onclick="logout()">退出</a>
+    </nav>
+    
+    <div style="display: flex; flex-wrap: wrap; margin: 20px;">
+        <div class="admin-card">
+            <h3>用户管理</h3>
+            <p>总用户数: <span class="stat" id="userCount">0</span></p>
+            <button onclick="manageUsers()">管理用户</button>
+        </div>
+        
+        <div class="admin-card">
+            <h3>数据统计</h3>
+            <p>学生: <span class="stat" id="studentCount">0</span></p>
+            <p>教师: <span class="stat" id="teacherCount">0</span></p>
+            <p>课程: <span class="stat" id="courseCount">0</span></p>
+        </div>
+        
+        <div class="admin-card">
+            <h3>系统管理</h3>
+            <button onclick="clearAllData()" style="background: #dc3545;">清空所有数据</button>
+            <button onclick="exportData()" style="margin-top: 10px;">导出数据</button>
+            <button onclick="importData()" style="margin-top: 10px;">导入数据</button>
+        </div>
+    </div>
+    
+    <div class="admin-card" style="margin: 20px;">
+        <h3>系统日志</h3>
+        <textarea id="logs" rows="5" style="width: 100%;" readonly>系统启动...</textarea>
+        <button onclick="clearLogs()">清空日志</button>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script>
+        // 检查是否为管理员
+        const user = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+        if (user.role !== 'admin') {
+            alert('需要管理员权限！');
+            window.location.href = 'login.html';
+        }
+        
+        function loadStats() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const students = JSON.parse(localStorage.getItem('students') || '[]');
+            const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+            const courses = JSON.parse(localStorage.getItem('courses') || '[]');
+            
+            document.getElementById('userCount').textContent = users.length;
+            document.getElementById('studentCount').textContent = students.length;
+            document.getElementById('teacherCount').textContent = teachers.length;
+            document.getElementById('courseCount').textContent = courses.length;
+            
+            addLog('管理员登录系统');
+        }
+        
+        function manageUsers() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            let msg = '用户列表:\n';
+            users.forEach(u => {
+                msg += `${u.id}. ${u.username} (${u.role})\n`;
+            });
+            alert(msg);
+        }
+        
+        function clearAllData() {
+            if (confirm('确定清空所有数据？此操作不可恢复！')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                addLog('管理员清空了所有数据');
+                alert('数据已清空，即将刷新页面');
+                location.reload();
+            }
+        }
+        
+        function addLog(message) {
+            const logs = document.getElementById('logs');
+            const time = new Date().toLocaleTimeString();
+            logs.value += `\n[${time}] ${message}`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+        
+        window.onload = loadStats;
+    </script>
+</body>
+</html>
