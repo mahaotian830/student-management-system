@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>成绩管理</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .score-form { background: white; padding: 20px; margin: 20px; border-radius: 10px; }
+        .form-group { margin: 10px 0; }
+        label { display: inline-block; width: 80px; }
+        input, select { padding: 5px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>📊 成绩管理</h1>
+    <nav>
+        <a href="dashboard.html">返回</a>
+        <a href="students.html">学生</a>
+        <a href="courses.html">课程</a>
+    </nav>
+    
+    <div class="score-form">
+        <h3>录入成绩</h3>
+        <div class="form-group">
+            <label>学生:</label>
+            <select id="studentSelect"></select>
+        </div>
+        <div class="form-group">
+            <label>课程:</label>
+            <select id="courseSelect"></select>
+        </div>
+        <div class="form-group">
+            <label>成绩:</label>
+            <input type="number" id="score" min="0" max="100" placeholder="0-100">
+        </div>
+        <button onclick="addScore()">提交成绩</button>
+    </div>
+    
+    <table id="scoreTable" style="margin: 20px; width: 100%;">
+        <thead><tr><th>学生</th><th>课程</th><th>成绩</th><th>操作</th></tr></thead>
+        <tbody id="scoreBody"></tbody>
+    </table>
+    
+    <script src="js/auth.js"></script>
+    <script>
+        function loadScores() {
+            const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+            const body = document.getElementById('scoreBody');
+            body.innerHTML = '';
+            
+            scores.forEach(score => {
+                body.innerHTML += `<tr>
+                    <td>${score.studentName}</td>
+                    <td>${score.courseName}</td>
+                    <td>${score.score}</td>
+                    <td><button onclick="deleteScore(${score.id})">删除</button></td>
+                </tr>`;
+            });
+        }
+        
+        function addScore() {
+            const studentId = document.getElementById('studentSelect').value;
+            const courseId = document.getElementById('courseSelect').value;
+            const score = document.getElementById('score').value;
+            
+            if (studentId && courseId && score) {
+                const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+                const students = JSON.parse(localStorage.getItem('students') || '[]');
+                const courses = JSON.parse(localStorage.getItem('courses') || '[]');
+                
+                const student = students.find(s => s.id == studentId);
+                const course = courses.find(c => c.id == courseId);
+                
+                scores.push({
+                    id: scores.length + 1,
+                    studentId: studentId,
+                    studentName: student?.name || '未知',
+                    courseId: courseId,
+                    courseName: course?.name || '未知',
+                    score: score,
+                    date: new Date().toLocaleDateString()
+                });
+                
+                localStorage.setItem('scores', JSON.stringify(scores));
+                loadScores();
+                alert('成绩添加成功');
+            }
+        }
+        
+        window.onload = function() {
+            loadScores();
+        };
+    </script>
+</body>
+</html>
