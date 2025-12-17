@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 学生管理系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .register-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>📝 注册新账号</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="regUsername">用户名</label>
+                <input type="text" id="regUsername" placeholder="字母和数字，3-20位" required>
+                <div class="error" id="usernameError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="regPassword">密码</label>
+                <input type="password" id="regPassword" placeholder="至少6位，包含字母和数字" required>
+                <div class="error" id="passwordError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="regEmail">邮箱</label>
+                <input type="email" id="regEmail" placeholder="example@qq.com" required>
+                <div class="error" id="emailError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="regPhone">手机号</label>
+                <input type="tel" id="regPhone" placeholder="11位手机号" required>
+                <div class="error" id="phoneError"></div>
+            </div>
+            
+            <button type="button" onclick="handleRegister()">注册</button>
+        </form>
+        <p>已有账号？<a href="login.html">立即登录</a></p>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+</body>
+</html>
