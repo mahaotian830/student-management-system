@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>课程管理</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .course-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+        }
+        .course-item h3 { margin: 0 0 5px 0; }
+        .course-meta { font-size: 14px; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <h1>课程管理</h1>
+    <nav>
+        <a href="dashboard.html">返回</a>
+        <a href="teachers.html">教师管理</a>
+    </nav>
+    
+    <div style="margin: 20px;">
+        <button onclick="addCourse()">添加课程</button>
+        <span style="margin-left: 20px;">总课程: <span id="courseCount">0</span></span>
+    </div>
+    
+    <div id="courseList"></div>
+    
+    <script src="js/auth.js"></script>
+    <script>
+        function loadCourses() {
+            const courses = JSON.parse(localStorage.getItem('courses') || '[]');
+            const container = document.getElementById('courseList');
+            document.getElementById('courseCount').textContent = courses.length;
+            container.innerHTML = '';
+            
+            courses.forEach(course => {
+                const item = `<div class="course-item">
+                    <h3>${course.name} (${course.code})</h3>
+                    <div class="course-meta">教师: ${course.teacher} | 学分: ${course.credit}</div>
+                    <div class="course-meta">时间: ${course.time} | 地点: ${course.location}</div>
+                    <button onclick="editCourse(${course.id})">编辑</button>
+                    <button onclick="deleteCourse(${course.id})">删除</button>
+                </div>`;
+                container.innerHTML += item;
+            });
+        }
+        
+        function addCourse() {
+            const name = prompt("课程名称:");
+            const code = prompt("课程代码:");
+            const teacher = prompt("授课教师:");
+            
+            if (name && code && teacher) {
+                const courses = JSON.parse(localStorage.getItem('courses') || '[]');
+                courses.push({
+                    id: courses.length + 1,
+                    name: name,
+                    code: code,
+                    teacher: teacher,
+                    credit: 2,
+                    time: "周一 1-2节",
+                    location: "教学楼101"
+                });
+                
+                localStorage.setItem('courses', JSON.stringify(courses));
+                loadCourses();
+            }
+        }
+        
+        window.onload = loadCourses;
+    </script>
+</body>
+</html>
