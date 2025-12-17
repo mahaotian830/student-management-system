@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>功能测试</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        .test-btn {
+            margin: 5px;
+            padding: 10px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 功能测试页面</h1>
+    <nav>
+        <a href="index.html">返回首页</a>
+        <a href="dashboard.html">控制面板</a>
+    </nav>
+    
+    <div class="test-section">
+        <h3>1. LocalStorage测试</h3>
+        <button class="test-btn" onclick="testStorage()">测试数据存储</button>
+        <button class="test-btn" onclick="testRetrieve()">测试数据读取</button>
+        <div class="test-result" id="storageResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. 登录状态测试</h3>
+        <button class="test-btn" onclick="checkLoginStatus()">检查登录状态</button>
+        <button class="test-btn" onclick="mockLogin()">模拟登录</button>
+        <button class="test-btn" onclick="clearSession()">清除Session</button>
+        <div class="test-result" id="loginResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. 浏览器兼容性</h3>
+        <button class="test-btn" onclick="detectBrowser()">检测浏览器</button>
+        <button class="test-btn" onclick="checkLocalStorage()">检查LocalStorage</button>
+        <div class="test-result" id="browserResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. 数据统计</h3>
+        <button class="test-btn" onclick="countData()">统计数据量</button>
+        <div class="test-result" id="dataResult"></div>
+    </div>
+    
+    <script>
+        // 测试LocalStorage
+        function testStorage() {
+            localStorage.setItem('test_time', new Date().toLocaleString());
+            document.getElementById('storageResult').innerHTML = 
+                '✅ LocalStorage写入成功！数据已保存';
+        }
+        
+        function testRetrieve() {
+            const data = localStorage.getItem('test_time');
+            document.getElementById('storageResult').innerHTML = 
+                data ? `✅ 读取到数据：${data}` : '❌ 没有测试数据';
+        }
+        
+        // 测试登录状态
+        function checkLoginStatus() {
+            const user = sessionStorage.getItem('currentUser');
+            document.getElementById('loginResult').innerHTML = 
+                user ? `✅ 已登录：${user}` : '❌ 未登录';
+        }
+        
+        function mockLogin() {
+            sessionStorage.setItem('currentUser', '测试用户');
+            document.getElementById('loginResult').innerHTML = '✅ 模拟登录成功';
+        }
+        
+        function clearSession() {
+            sessionStorage.clear();
+            document.getElementById('loginResult').innerHTML = '✅ Session已清除';
+        }
+        
+        // 浏览器检测
+        function detectBrowser() {
+            const info = `浏览器：${navigator.userAgent}`;
+            document.getElementById('browserResult').innerHTML = `✅ ${info}`;
+        }
+        
+        function checkLocalStorage() {
+            const supported = typeof localStorage !== 'undefined';
+            document.getElementById('browserResult').innerHTML = 
+                supported ? '✅ 支持LocalStorage' : '❌ 不支持LocalStorage';
+        }
+        
+        // 数据统计
+        function countData() {
+            const students = JSON.parse(localStorage.getItem('students') || '[]');
+            const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            document.getElementById('dataResult').innerHTML = 
+                `学生：${students.length} 条<br>` +
+                `教师：${teachers.length} 条<br>` +
+                `用户：${users.length} 条`;
+        }
+        
+        // 页面加载时自动运行一些测试
+        window.onload = function() {
+            detectBrowser();
+            checkLocalStorage();
+            countData();
+        };
+    </script>
+</body>
+</html>
