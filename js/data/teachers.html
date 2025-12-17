@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>教师管理</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .teacher-card {
+            background: white;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .teacher-card h3 { color: #007bff; margin: 0; }
+        .teacher-info { margin: 5px 0; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>教师管理</h1>
+    <nav>
+        <a href="dashboard.html">返回</a>
+        <a href="students.html">学生管理</a>
+    </nav>
+    
+    <div style="margin: 20px;">
+        <button onclick="addTeacher()">添加教师</button>
+    </div>
+    
+    <div id="teacherList"></div>
+    
+    <script src="js/auth.js"></script>
+    <script>
+        function loadTeachers() {
+            const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+            const container = document.getElementById('teacherList');
+            container.innerHTML = '';
+            
+            teachers.forEach(teacher => {
+                const card = `<div class="teacher-card">
+                    <h3>${teacher.name} (${teacher.subject})</h3>
+                    <div class="teacher-info">职称: ${teacher.title}</div>
+                    <div class="teacher-info">电话: ${teacher.phone}</div>
+                    <button onclick="editTeacher(${teacher.id})">编辑</button>
+                    <button onclick="deleteTeacher(${teacher.id})">删除</button>
+                </div>`;
+                container.innerHTML += card;
+            });
+        }
+        
+        function addTeacher() {
+            const name = prompt("教师姓名:");
+            const subject = prompt("教授科目:");
+            const phone = prompt("联系电话:");
+            
+            if (name && subject && phone) {
+                const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+                const newId = teachers.length + 1;
+                
+                teachers.push({
+                    id: newId,
+                    name: name,
+                    subject: subject,
+                    title: "讲师",
+                    phone: phone
+                });
+                
+                localStorage.setItem('teachers', JSON.stringify(teachers));
+                loadTeachers();
+            }
+        }
+        
+        window.onload = loadTeachers;
+    </script>
+</body>
+</html>
